@@ -28,22 +28,42 @@ for line in tab :
     # Ajouter la ligne à notre tableau de sommets 
     sommets.append(line_intermidiaire)
 
-
-for i in range(0, len(liste_tous_les_sommets)):
-    a_une_contrainte = False
+# On parcours la liste des sommets, pour chaque sommet de cette liste, on parcourt le tableau récupéré du fichier
+# pour vérifier s'ils ont des successeurs. Le but est d'établir une liste pour leur affecter oméga si jamais
+for nom_sommet in liste_tous_les_sommets:
+    a_un_successeur = False
     for sommet in sommets:
-        if(liste_tous_les_sommets[i] in sommet[2:]):
-            a_une_contrainte = True
+        if(nom_sommet in sommet[2:]):
+            a_un_successeur = True
             break
-    if(a_une_contrainte == False):
-        liste_sommets_sans_contraintes.append(liste_tous_les_sommets[i])
+    if(a_un_successeur == False):
+        liste_sommets_sans_contraintes.append(nom_sommet)
    
 
 # Ajouter oméga au tableau des sommets avec ses contraintes
 sommets.append([len(sommets), 0] + liste_sommets_sans_contraintes)
 
+matrice = []
+
+# Parcourir les sommets afin de remplir la matrice adjacente.
+# Pour chaque sommet, on parcours l'ensemble des sommets (donc 2 boucles)
+# Et on vérifie si le sommet actuel (1ere boucle) apparait en tant que contraintes pour les autres
+# Si oui on affecte la longueur de la tâche si non on affecte *
+
+for i in range(0, len(sommets)):
+    ligne = []
+    for sommet in sommets:
+        if sommets[i][0] in sommet[2:]:
+            ligne.append(sommets[i][1])
+        else:
+            ligne.append("*")
+    matrice.append(ligne)
+
+# Une fonction rapide pour afficher les valeurs sur 3 cases (à voir si il y a pas mieux à faire)
 def afficher_valeur(val):
      print("{:>3}".format(val), end=" ")
+
+# Ici pour afficher la matrice, (on revient dessus)
 for i in range(-1, len(sommets)):
     for j in range (-1, len(sommets)):
         if (i == - 1) :
@@ -54,12 +74,6 @@ for i in range(-1, len(sommets)):
         elif (i > -1 and j == -1) :
             afficher_valeur(sommets[i][0])
         else :
-            print("{:>3}".format("*"), end=" ")
+           afficher_valeur(matrice[i][j])
     print("\n", end="")
-
-
-# print(sommets)
-# print("Liste de tous les sommets : ", liste_tous_les_sommets)
-# print("sommets sans contraintes : ", liste_sommets_sans_contraintes)
-
 
