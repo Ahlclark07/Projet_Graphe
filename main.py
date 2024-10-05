@@ -28,8 +28,6 @@ for line in tab :
     # Ajouter la ligne à notre tableau de sommets 
     sommets.append(line_intermidiaire)
 
-# Ajouter oméga au tableau des sommets 
-sommets.append([len(sommets), 0])
 
 for i in range(0, len(liste_tous_les_sommets)):
     a_une_contrainte = False
@@ -41,20 +39,27 @@ for i in range(0, len(liste_tous_les_sommets)):
         liste_sommets_sans_contraintes.append(liste_tous_les_sommets[i])
    
 
-print(sommets)
-print("Liste de tous les sommets : ", liste_tous_les_sommets)
-print("sommets sans contraintes : ", liste_sommets_sans_contraintes)
+# Ajouter oméga au tableau des sommets avec ses contraintes
+sommets.append([len(sommets), 0] + liste_sommets_sans_contraintes)
 
-# for sommet in liste_sommets_sans_contraintes:
-    
-# for i in range(-1, len(sommets) + 2):
-#     for j in range (-1, len(sommets) + 2):
-#         if (i == - 1 and j == -1) :
-#             print(" ", end="")
-#         elif (i == - 1 and j != -1) :
-#             print("")
-#         else :
-#             print("*", end="")
-#     print("\n", end="")
+def afficher_valeur(val):
+     print("{:>3}".format(val), end=" ")
+for i in range(-1, len(sommets)):
+    for j in range (-1, len(sommets)):
+        if (i == - 1) :
+            if(j == - 1):
+             afficher_valeur(" ")
+            else :
+             afficher_valeur(sommets[j][0])
+        elif (i > -1 and j == -1) :
+            afficher_valeur(sommets[i][0])
+        else :
+            print("{:>3}".format("*"), end=" ")
+    print("\n", end="")
+
+
+# print(sommets)
+# print("Liste de tous les sommets : ", liste_tous_les_sommets)
+# print("sommets sans contraintes : ", liste_sommets_sans_contraintes)
 
 
