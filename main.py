@@ -1,5 +1,5 @@
 import numpy as np
-
+import sys
 # Création de la table qui garde les sommets 
 sommets = []
 # ouverture du fichier (on modifiera plus tard pour le choix des fichiers)
@@ -24,6 +24,9 @@ for line in tab :
                 liste_tous_les_sommets.append(line_intermidiaire[i])
         except:
             line_intermidiaire.pop(i)
+        if i > 0 and line_intermidiaire[i] < 0 :
+            print("Un arc de coût négatif a été trouvé.. Le programme s'arrête")
+            raise SystemExit
     # Si la longueur du tableau est 2, il n'y pas de contraintes. On rajoute alpha comme contrainte
         if(len(line_intermidiaire) == 2):
             line_intermidiaire.append(0)
