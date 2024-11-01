@@ -1,3 +1,5 @@
+import numpy as np
+
 # Création de la table qui garde les sommets 
 sommets = []
 # ouverture du fichier (on modifiera plus tard pour le choix des fichiers)
@@ -63,17 +65,61 @@ for i in range(0, len(sommets)):
 def afficher_valeur(val):
      print("{:>3}".format(val), end=" ")
 
-# Ici pour afficher la matrice, (on revient dessus)
-for i in range(-1, len(sommets)):
-    for j in range (-1, len(sommets)):
-        if (i == - 1) :
-            if(j == - 1):
-             afficher_valeur(" ")
+# Ici pour afficher la matrice, (on revient dessus car ce n'est actuellement pas optimale)
+def afficher_matrice():
+    for i in range(-1, len(sommets)):
+        for j in range (-1, len(sommets)):
+            if (i == - 1) :
+                if(j == - 1):
+                    afficher_valeur(" ")
+                else :
+                 afficher_valeur(sommets[j][0])
+            elif (i > -1 and j == -1) :
+                afficher_valeur(sommets[i][0])
             else :
-             afficher_valeur(sommets[j][0])
-        elif (i > -1 and j == -1) :
-            afficher_valeur(sommets[i][0])
-        else :
-           afficher_valeur(matrice[i][j])
-    print("\n", end="")
+             afficher_valeur(matrice[i][j])
+        print("\n", end="")
 
+
+
+def algo_de_rang() :
+    # On récupère les noms des sommets encore une fois pour garder le compte.
+    sommets_pour_rang = []
+    for ligne in sommets :
+        sommets_pour_rang.append(ligne[0])
+    # on initialise le rang à 0
+    rang = 0
+    # on se sert de numpy car c'est beaucoup plus facile pour parcourir les colonnes
+    matrice_rang = np.array(matrice)
+
+    # Une boucle pour chaque ligne du tableau même si c'est inutile d'en faire autant dans certains cas
+    for i in range(0, len(matrice)):
+        # On utilise une fonction utile de numpy qui permet de récupérer les colonnes qui ne contiennent que des
+        # des * puis de récupérer leur index
+        cols = np.all(matrice_rang == "*", axis=0)
+        cols_indices = np.where(cols)[0]
+
+        # Ne vous inquiétez pas pour la variable saut_de_pas. Elle est là au cas où on doit retirer plus d'un sommet. Il 
+        # faut qu'on garde le bon index car quand on en retire 1 il faut faire -1 sur le reste
+        saut_de_pas = 0
+        # Ensuite c'est simple, vu qu'on a l'index des colonnes qui n'ont que des * on les retire dans notre matrice 
+        # ainsi que leur ligne et on cherche les sommets qui correspondent à ces index dans notre tableau sommets_pour_rang pour les retirer
+        # On les rajoute ensuite dans notre tableau de sommets de base qui aura maintenant la forme suivant pour chaque sommets :
+        # [nom_du_sommet, cout, liste_des_contraintes, rang]
+
+        for col in cols_indices:
+            index_reel = col - saut_de_pas
+            print("Le sommet " + str(sommets_pour_rang[index_reel]) + " a pour rang : " + str(rang)) 
+            for sommet in sommets:
+                if sommet[0] == sommets_pour_rang[index_reel] :
+                    sommet.append(rang)   
+            matrice_rang = np.delete(matrice_rang, index_reel, axis=0)
+            matrice_rang = np.delete(matrice_rang, index_reel, axis=1)
+            del sommets_pour_rang[index_reel]
+            saut_de_pas += 1
+        rang +=1
+        
+
+afficher_matrice()
+algo_de_rang()
+print(sommets)
