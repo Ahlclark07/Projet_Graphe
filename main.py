@@ -2,6 +2,7 @@ import numpy as np
 # Création de la table qui contient les sommets et leurs données et de la table qui contient la matrice adjacente 
 sommets = []
 matrice = []
+sommets_classe = []
 # ajout de alpha de cout 0 et sans contraintes
 sommets.append([0, 0])
 liste_tous_les_sommets = []
@@ -70,7 +71,7 @@ def definir_matrice_adjacente():
 
 # Une fonction rapide pour afficher les valeurs sur 3 cases (à voir si il y a pas mieux à faire)
 def afficher_valeur(val):
-     print("{:>3}".format(val), end=" ")
+     print("{:>10}".format(val), end=" ")
     # print(val, end=" ")
 
 # Ici pour afficher la matrice, (on revient dessus car ce n'est actuellement pas optimale)
@@ -121,6 +122,7 @@ def algo_de_rang() :
             for sommet in sommets:
                 if sommet[0] == sommets_pour_rang[index_reel] :
                     sommet.append(rang)   
+                    sommets_classe.append(sommet)
             matrice_rang = np.delete(matrice_rang, index_reel, axis=0)
             matrice_rang = np.delete(matrice_rang, index_reel, axis=1)
             del sommets_pour_rang[index_reel]
@@ -141,7 +143,7 @@ afficher_matrice()
 algo_de_rang()
 
 # J'affiche juste notre jeu de données
-print(sommets)
+print(sommets_classe)
 
 # Déjà fait :
 # Lire le fichier
@@ -154,3 +156,67 @@ print(sommets)
 # Rajouter l'algo pour calculer les dates au plus tot et au plus tard 😬
 # Utiliser le résultat précédent pour le chemin critique
 # Optimiser le code pour rendre plus facile le déroulement de l'algo sur plusieurs fichiers à la suite
+
+# algo du calendrier au plus tôt
+
+def algo_calendrier_tot():
+  afficher_valeur("Rang")
+  for sommet in sommets_classe:
+      afficher_valeur(sommet[-1])
+  print()  
+  afficher_valeur("Tache")
+  for sommet in sommets_classe:
+      afficher_valeur(str(sommet[0]) +"("+str(sommet[1]) + ")")
+  print()
+  afficher_valeur("PDCS")
+  dapt = []
+  dpprs = []
+  indice = 0
+  for sommet in sommets_classe:  
+      if(sommet[0] == 0):
+          afficher_valeur("-")
+          dapt.append(0)
+          dpprs.append([0])
+      else: 
+          dpprs.append([])        
+          liste_predecesseurs = ""
+          if(len(sommet) > 2):
+            for i in range(2, len(sommet) - 1):
+                valeur_date = 0
+                liste_predecesseurs += str(sommet[i])
+                for prd in sommets:
+                    if prd[0] == sommet[i]:
+                     valeur_date += dapt[sommet[i]] + prd[1]
+                     break      
+                dpprs[indice].append(valeur_date) 
+                if i != len(sommet)-2 :
+                    liste_predecesseurs += ","
+            meilleur_valeur = dpprs[indice][0]
+            for valeur in dpprs[indice]:
+                if valeur > meilleur_valeur :
+                    meilleur_valeur = valeur
+            dapt.append(meilleur_valeur)          
+            afficher_valeur(liste_predecesseurs)
+      indice += 1
+  print()
+  afficher_valeur("DPPR")
+  for dppr in dpprs :
+      dates = ""
+      for i in range(0, len(dppr)):
+        dates += str(dppr[i])
+        if(i < len(dppr) - 1):
+            dates += ","
+      afficher_valeur(dates)
+  print()
+  afficher_valeur("DAPT")
+  for valeur in dapt :
+      afficher_valeur(valeur)
+
+      
+      
+
+algo_calendrier_tot()
+   
+    
+          
+
