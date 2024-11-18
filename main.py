@@ -231,11 +231,13 @@ def algo_calendrier_tard():
         else :
             dpsc.append([])
             for successeur in element:
+                valeur = 0
                 for i in range(0, len(sommets_classe)):
-                    valeur = 0
                     if sc_reversed[i][0] == successeur:
-                        valeur = dapd[i]-sc_reversed[i][1]
-                        dpsc[indice].append(valeur)
+                        valeur = dapd[i]
+                    if i == indice:
+                        valeur -= sc_reversed[i][1]
+                dpsc[indice].append(valeur)
             valeur_min = dpsc[indice][0] 
             for valeur in dpsc[indice]:
                 if valeur_min > valeur:
@@ -272,7 +274,13 @@ def algo_calendrier_tard():
     for valeur in reversed(dapd):
         afficher_valeur(valeur)
     
-
+def algo_de_marge():
+    dapd_reversed = list(reversed(dapd))
+    print()
+    afficher_valeur("Marge")
+    for i in range(0, len(dapd_reversed)):
+        marge = str(dapd_reversed[i] - dapt[i])
+        afficher_valeur(marge)
 
 
 # Déroulement du programme
@@ -282,5 +290,5 @@ afficher_matrice()
 algo_de_rang()
 algo_calendrier_tot()
 algo_calendrier_tard()
-
+algo_de_marge()
 
