@@ -71,7 +71,7 @@ def definir_matrice_adjacente():
 
 # Une fonction rapide pour afficher les valeurs sur 3 cases (à voir si il y a pas mieux à faire)
 def afficher_valeur(val):
-     print("{:>10}".format(val), end=" ")
+     print("{:>11}".format(val), end=" ")
     # print(val, end=" ")
 
 # Ici pour afficher la matrice, (on revient dessus car ce n'est actuellement pas optimale)
@@ -136,14 +136,8 @@ def algo_de_rang() :
         raise SystemExit
 
 
-# Déroulement du programme
-lire_fichier("tableau.txt")
-definir_matrice_adjacente()
-afficher_matrice()
-algo_de_rang()
 
 # J'affiche juste notre jeu de données
-print(sommets_classe)
 
 # Déjà fait :
 # Lire le fichier
@@ -152,12 +146,13 @@ print(sommets_classe)
 # Construit la matrice d'adjacence et l'afficher
 # Fait l'algo de rang
 # Modifier l'algo de rang pour gérer la détection de circuit et arrêter le programme 
-# Todo :
 # Rajouter l'algo pour calculer les dates au plus tot et au plus tard 😬
+# Todo :
 # Utiliser le résultat précédent pour le chemin critique
 # Optimiser le code pour rendre plus facile le déroulement de l'algo sur plusieurs fichiers à la suite
 
 # algo du calendrier au plus tôt
+dapt = [] 
 
 def algo_calendrier_tot():
   afficher_valeur("Rang")
@@ -169,7 +164,6 @@ def algo_calendrier_tot():
       afficher_valeur(str(sommet[0]) +"("+str(sommet[1]) + ")")
   print()
   afficher_valeur("PDCS")
-  dapt = []
   dpprs = []
   indice = 0
   for sommet in sommets_classe:  
@@ -184,10 +178,15 @@ def algo_calendrier_tot():
             for i in range(2, len(sommet) - 1):
                 valeur_date = 0
                 liste_predecesseurs += str(sommet[i])
-                for prd in sommets:
+                y = 0
+                for prd in sommets_classe:
                     if prd[0] == sommet[i]:
-                     valeur_date += dapt[sommet[i]] + prd[1]
-                     break      
+                     valeur_date += prd[1]
+                    if sommets_classe[y][0] == sommet[i]:
+                        valeur_date += dapt[y]                 
+                    y +=1
+               
+                    
                 dpprs[indice].append(valeur_date) 
                 if i != len(sommet)-2 :
                     liste_predecesseurs += ","
@@ -212,11 +211,76 @@ def algo_calendrier_tot():
   for valeur in dapt :
       afficher_valeur(valeur)
 
-      
-      
-
-algo_calendrier_tot()
-   
+dapd = []     
+def algo_calendrier_tard():
+    successeurs = []
+    for sommet in reversed(sommets_classe):
+        tab = []
+        for sommet_ in sommets:
+            if(sommet[0] in sommet_[2:len(sommet_) -1]):    
+                 tab.append(sommet_[0])
+        successeurs.append(tab)
+    dpsc = []
+    dapt_reversed = list(reversed(dapt))
+    sc_reversed = list(reversed(sommets_classe))
+    indice = 0
+    for element in successeurs:
+        if(len(element) == 0):
+            dpsc.append([dapt_reversed[0]])
+            dapd.append(dapt_reversed[0])
+        else :
+            dpsc.append([])
+            for successeur in element:
+                for i in range(0, len(sommets_classe)):
+                    valeur = 0
+                    if sc_reversed[i][0] == successeur:
+                        valeur = dapd[i]-sc_reversed[i][1]
+                        dpsc[indice].append(valeur)
+            valeur_min = dpsc[indice][0] 
+            for valeur in dpsc[indice]:
+                if valeur_min > valeur:
+                    valeur_min = valeur
+            dapd.append(valeur_min)
+        indice += 1
+    print()
+    afficher_valeur("SCCS")
+    for tab in reversed(successeurs):
+        i = 0
+        texte = ""
+        for valeur in tab:
+            texte +=str(valeur)
+            if(i < len(tab) - 1):
+                texte += ","
+            i +=1
+        if texte == "":
+            afficher_valeur("-")
+        else:
+            afficher_valeur(texte)
+    print()
+    afficher_valeur("DPSC")
+    for tab in reversed(dpsc):
+        texte = ""
+        i = 0
+        for valeur in tab:
+            texte += str(valeur)
+            if(i != len(tab)-1):
+                texte += ","
+            i += 1
+        afficher_valeur(texte)
+    print()
+    afficher_valeur("DAPD")
+    for valeur in reversed(dapd):
+        afficher_valeur(valeur)
     
-          
+
+
+
+# Déroulement du programme
+lire_fichier("tableau.txt")
+definir_matrice_adjacente()
+afficher_matrice()
+algo_de_rang()
+algo_calendrier_tot()
+algo_calendrier_tard()
+
 
