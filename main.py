@@ -278,9 +278,18 @@ def algo_de_marge():
     dapd_reversed = list(reversed(dapd))
     print()
     afficher_valeur("Marge")
+    chemin_critique = ""
     for i in range(0, len(dapd_reversed)):
-        marge = str(dapd_reversed[i] - dapt[i])
+        marge = dapd_reversed[i] - dapt[i]
         afficher_valeur(marge)
+        if (marge == 0):
+            chemin_critique += str(sommets_classe[i][0])
+            if(i < len(sommets_classe) - 1):
+                chemin_critique += "->"
+    print()
+    afficher_valeur("Chemin critique : " +chemin_critique)
+    
+
 
 
 # Déroulement du programme
