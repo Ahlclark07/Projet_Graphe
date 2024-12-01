@@ -1,16 +1,10 @@
 import numpy as np
-# Création de la table qui contient les sommets et leurs données et de la table qui contient la matrice adjacente 
-sommets = []
-matrice = []
-sommets_classe = []
-# ajout de alpha de cout 0 et sans contraintes
-sommets.append([0, 0])
-liste_tous_les_sommets = []
-liste_sommets_sans_successeurs = []
-
+import os 
 # Fonction qui permet de lire le fichier et d'en ressortir le tableau de données sous le format
 # [ [sommet_0, cout, contraines_1, ..., contraintes_n ], ..., [sommet_n, cout, contraines_1, ..., contraintes_n ] ]
-def lire_fichier(nom_fichier):
+def lire_fichier(nom_fichier, sommets):
+    liste_tous_les_sommets = []
+    liste_sommets_sans_successeurs = []
     arreteProgramme = False
     # ouverture du fichier (on modifiera plus tard pour le choix des fichiers)
     fichier = open(nom_fichier, "r")
@@ -33,8 +27,8 @@ def lire_fichier(nom_fichier):
             except:
                 line_intermidiaire.pop(i)
             if arreteProgramme == True:
-                print("Un arc de coût négatif a été trouvé.. Le programme s'arrête")
-                raise SystemExit
+                return arreteProgramme
+    
             
         # Si la longueur du tableau est 2, il n'y pas de contraintes. On rajoute alpha comme contrainte
             if(len(line_intermidiaire) == 2):
@@ -54,12 +48,14 @@ def lire_fichier(nom_fichier):
             liste_sommets_sans_successeurs.append(nom_sommet)
     # Ajouter oméga au tableau des sommets avec ses contraintes oméga fera le nombre de sommets + 1 du coup len(sommets) ici
     sommets.append([len(sommets), 0] + liste_sommets_sans_successeurs)
+    return arreteProgramme
 
 # Parcourir les sommets afin de remplir la matrice adjacente.
 # Pour chaque sommet, on parcours l'ensemble des sommets (donc 2 boucles)
 # Et on vérifie si le sommet actuel (1ere boucle) apparait en tant que contraintes pour les autres
 # Si oui on affecte la longueur de la tâche si non on affecte *
-def definir_matrice_adjacente(): 
+def definir_matrice_adjacente(sommets): 
+    matrice = []
     for i in range(0, len(sommets)):
         ligne = []
         for sommet in sommets:
@@ -68,30 +64,43 @@ def definir_matrice_adjacente():
             else:
                 ligne.append("*")
         matrice.append(ligne)
+    return matrice
 
 # Une fonction rapide pour afficher les valeurs sur 3 cases (à voir si il y a pas mieux à faire)
+def afficher_valeur_matrice(val):
+     print("{:>3}".format(val), end=" ")
+# Une fonction rapide pour afficher les valeurs sur 11 cases (à voir si il y a pas mieux à faire)
 def afficher_valeur(val):
      print("{:>11}".format(val), end=" ")
-    # print(val, end=" ")
+
+# Une fonction pour afficher les valeurs en rouge
+def afficher_erreur(message):
+    print(f"\033[31m{message}\033[0m")
+
+# Une fonction pour afficher les valeurs en vert
+def afficher_vert(message):
+    print(f"\033[32m{message}\033[0m")
+
+
 
 # Ici pour afficher la matrice, (on revient dessus car ce n'est actuellement pas optimale)
-def afficher_matrice():
+def afficher_matrice(sommets, matrice):
+    print("------------------------------------------------Matrice des valeurs------------------------------------------------")
     for i in range(-1, len(sommets)):
         for j in range (-1, len(sommets)):
             if (i == - 1) :
                 if(j == - 1):
-                    afficher_valeur(" ")
+                    afficher_valeur_matrice(" ")
                 else :
-                 afficher_valeur(sommets[j][0])
+                 afficher_valeur_matrice(sommets[j][0])
             elif (i > -1 and j == -1) :
-                afficher_valeur(sommets[i][0])
+                afficher_valeur_matrice(sommets[i][0])
             else :
-             afficher_valeur(matrice[i][j])
+             afficher_valeur_matrice(matrice[i][j])
         print("\n", end="")
 
 
-
-def algo_de_rang() :
+def algo_de_rang(sommets, matrice, sommets_classe) :
     # On récupère les noms des sommets encore une fois pour garder le compte.
     sommets_pour_rang = []
     for ligne in sommets :
@@ -115,46 +124,33 @@ def algo_de_rang() :
         # ainsi que leur ligne et on cherche les sommets qui correspondent à ces index dans notre tableau sommets_pour_rang pour les retirer
         # On les rajoute ensuite dans notre tableau de sommets de base qui aura maintenant la forme suivant pour chaque sommets :
         # [nom_du_sommet, cout, liste_des_contraintes, rang]
-
+        changements = []
         for col in cols_indices:
             index_reel = col - saut_de_pas
-            print("Le sommet " + str(sommets_pour_rang[index_reel]) + " a pour rang : " + str(rang)) 
             for sommet in sommets:
                 if sommet[0] == sommets_pour_rang[index_reel] :
                     sommet.append(rang)   
                     sommets_classe.append(sommet)
             matrice_rang = np.delete(matrice_rang, index_reel, axis=0)
             matrice_rang = np.delete(matrice_rang, index_reel, axis=1)
+            changements.append(sommets_pour_rang[index_reel])
             del sommets_pour_rang[index_reel]
             # Encore une fois, ne vous inquiétez pour le saut de pas.
             saut_de_pas += 1
         # On incrémente le rang à chaque itération de l'algo
+        if(len(changements) > 0):
+            print("Points d'entrée : " + " ".join(map(str, changements)))
+            print("Suspression des points d'entrés")
+            print("Le rang attribué est : " + str((rang)))
+            print("Points restants : " + " - ".join(map(str, sommets_pour_rang)))
         rang +=1
-    if (len(matrice_rang) != 0):
-        print(matrice_rang)
-        print("Circuit détecté. Le programme s'arrête.")
-        raise SystemExit
-
-
+    return len(matrice_rang) != 0
 
 # J'affiche juste notre jeu de données
-
-# Déjà fait :
-# Lire le fichier
-# Détecter les coûts négatifs et arrêter le programme
-# Rajouter alpha (0) et oméga (nombre de sommets + 1)
-# Construit la matrice d'adjacence et l'afficher
-# Fait l'algo de rang
-# Modifier l'algo de rang pour gérer la détection de circuit et arrêter le programme 
-# Rajouter l'algo pour calculer les dates au plus tot et au plus tard 😬
-# Todo :
-# Utiliser le résultat précédent pour le chemin critique
-# Optimiser le code pour rendre plus facile le déroulement de l'algo sur plusieurs fichiers à la suite
-
 # algo du calendrier au plus tôt
-dapt = [] 
 
-def algo_calendrier_tot():
+def algo_calendrier_tot(sommets_classe, sommets):
+  dapt = []
   afficher_valeur("Rang")
   for sommet in sommets_classe:
       afficher_valeur(sommet[-1])
@@ -210,10 +206,11 @@ def algo_calendrier_tot():
   afficher_valeur("DAPT")
   for valeur in dapt :
       afficher_valeur(valeur)
-
-dapd = []     
-def algo_calendrier_tard():
+  return dapt
+   
+def algo_calendrier_tard(sommets_classe, sommets, dapt):
     successeurs = []
+    dapd = []
     for sommet in reversed(sommets_classe):
         tab = []
         for sommet_ in sommets:
@@ -273,8 +270,9 @@ def algo_calendrier_tard():
     afficher_valeur("DAPD")
     for valeur in reversed(dapd):
         afficher_valeur(valeur)
+    return dapd
     
-def algo_de_marge():
+def algo_de_marge(dapt, dapd, sommets_classe):
     dapd_reversed = list(reversed(dapd))
     print()
     afficher_valeur("Marge")
@@ -289,15 +287,63 @@ def algo_de_marge():
     print()
     afficher_valeur("Chemin critique : " +chemin_critique)
     
+def afficher_menu():
+    print("\n=== Menu ===")
+    print("1. Lister les fichiers du dossier courant")
+    print("2. Quitter")
+
+def traiterUnGraphe(fichier):
+    sommets = []
+    matrice = []
+    sommets_classe = []
+    nbr_arcs = 0
+        # ajout de alpha de cout 0 et sans contraintes
+    sommets.append([0, 0]) 
+    cout_negatif = lire_fichier("./tableaux/" + fichier, sommets)
+    print("\n--------------------------------------Création du graphe d’ordonnancement :----------------------------------------------")
+    print(str(len(sommets)) + " sommets")
+    donnee_graphe = []
+    for sommet_a in sommets:
+        for sommet_b in sommets:
+            if(sommet_a[0] in sommet_b[2:]):
+                print(str(sommet_a[0]) + " -> " + str(sommet_b[0]) + " = " + str(sommet_a[1]))
+                donnee_graphe.append([sommet_a[0], sommet_b[0], sommet_a[1]])
+                nbr_arcs += 1
+    print(str(nbr_arcs) + " arcs")
+    if(cout_negatif):
+        afficher_erreur("Cout négatif retrouvé dans le programme")
+    else:
+        matrice = definir_matrice_adjacente(sommets)
+        afficher_matrice(sommets, matrice)
+        print("\n--------------------------------------Détection de circuit et détermination des rangs :----------------------------------------------")
+        circuit = algo_de_rang(sommets, matrice, sommets_classe)
+        if(circuit):
+            afficher_erreur("Circuit détecté le programme s'arrête \n")
+        else:
+            afficher_vert("-> Il n’y a pas de circuit \n Il n’y a pas d’arcs négatifs \n-> C’est un graphe d’ordonnancement")
+            print("\n------------------------------------------------------------------------Calendrier des dates :----------------------------------------------")
+            dapt = algo_calendrier_tot(sommets_classe, sommets)
+            dapd = algo_calendrier_tard(sommets_classe, sommets, dapt)
+            algo_de_marge(dapt, dapd, sommets_classe)
+       
+    
 
 
 
-# Déroulement du programme
-lire_fichier("tableau.txt")
-definir_matrice_adjacente()
-afficher_matrice()
-algo_de_rang()
-algo_calendrier_tot()
-algo_calendrier_tard()
-algo_de_marge()
+### Programme
 
+def main():
+    continuer = True
+    print("Bienvenue dans le programme ! Faites un choix")
+    fichiers = os.listdir('./tableaux')
+    print( " | ".join(map(str, fichiers)))
+    while(continuer):
+        choix = input("Entrez le numéro du fichier que vous souhaitez traiter parmi la liste ci dessous. Si vous souhaitez arrêter le programme inscrivez un autre numéro : ")
+        fichier = "table " + choix +".txt"
+        if(fichier in fichiers):
+            traiterUnGraphe(fichier)
+        else:
+            print("Arrêt du programme ! Au revoir ! :)")
+            continuer = False
+
+main()
