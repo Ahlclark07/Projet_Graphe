@@ -1,8 +1,6 @@
 
  
 from fonctions.affichage_valeurs import afficher_valeur
-
-
 def algo_calendrier_tard(sommets_classe, sommets, dapt):
     successeurs = []
     dapd = []

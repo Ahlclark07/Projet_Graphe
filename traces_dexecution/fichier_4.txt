@@ -1,0 +1,80 @@
+--------------------------------------Création du graphe d’ordonnancement de table 4.txt :----------------------------------------------
+13 sommets
+0 -> 1 = 0
+0 -> 2 = 0
+1 -> 4 = 3
+2 -> 3 = 2
+3 -> 10 = 3
+4 -> 5 = 5
+4 -> 7 = 5
+4 -> 9 = 5
+5 -> 6 = 4
+5 -> 8 = 4
+6 -> 11 = 2
+7 -> 8 = 2
+8 -> 11 = 4
+9 -> 10 = 5
+10 -> 12 = 1
+11 -> 12 = 2
+16 arcs
+------------------------------------------------Matrice des valeurs------------------------------------------------
+      0   1   2   3   4   5   6   7   8   9  10  11  12
+  0   *   0   0   *   *   *   *   *   *   *   *   *   *
+  1   *   *   *   *   3   *   *   *   *   *   *   *   *
+  2   *   *   *   2   *   *   *   *   *   *   *   *   *
+  3   *   *   *   *   *   *   *   *   *   *   3   *   *
+  4   *   *   *   *   *   5   *   5   *   5   *   *   *
+  5   *   *   *   *   *   *   4   *   4   *   *   *   *
+  6   *   *   *   *   *   *   *   *   *   *   *   2   *
+  7   *   *   *   *   *   *   *   *   2   *   *   *   *
+  8   *   *   *   *   *   *   *   *   *   *   *   4   *
+  9   *   *   *   *   *   *   *   *   *   *   5   *   *
+ 10   *   *   *   *   *   *   *   *   *   *   *   *   1
+ 11   *   *   *   *   *   *   *   *   *   *   *   *   2
+ 12   *   *   *   *   *   *   *   *   *   *   *   *   *
+
+--------------------------------------Détection de circuit et détermination des rangs :----------------------------------------------
+Points d'entrée : 0
+Suspression des points d'entrés
+Le rang attribué est : 0
+Points restants : 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12
+Points d'entrée : 1 2
+Suspression des points d'entrés
+Le rang attribué est : 1
+Points restants : 3 - 4 - 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12
+Points d'entrée : 3 4
+Suspression des points d'entrés
+Le rang attribué est : 2
+Points restants : 5 - 6 - 7 - 8 - 9 - 10 - 11 - 12
+Points d'entrée : 5 7 9
+Suspression des points d'entrés
+Le rang attribué est : 3
+Points restants : 6 - 8 - 10 - 11 - 12
+Points d'entrée : 6 8 10
+Suspression des points d'entrés
+Le rang attribué est : 4
+Points restants : 11 - 12
+Points d'entrée : 11
+Suspression des points d'entrés
+Le rang attribué est : 5
+Points restants : 12
+Points d'entrée : 12
+Suspression des points d'entrés
+Le rang attribué est : 6
+Points restants :
+-> Il n’y a pas de circuit
+ Il n’y a pas d’arcs négatifs
+-> C’est un graphe d’ordonnancement
+
+------------------------------------------------------------------------Calendrier des dates :----------------------------------------------
+       Rang           0           1           1           2           2           3           3           3           4           4           4           5           6
+      Tache        0(0)        1(3)        2(2)        3(3)        4(5)        5(4)        7(2)        9(5)        6(2)        8(4)       10(1)       11(2)       12(0)
+       PDCS           -           0           0           2           1           4           4           4           5         5,7         3,9         6,8       10,11
+       DPPR           0           0           0           2           3           8           8           8          12       12,10        5,13       14,16       14,18
+       DAPT           0           0           0           2           3           8           8           8          12          12          13          16          18
+       SCCS         1,2           4           3          10       5,7,9         6,8           8          10          11          11          12          12           -
+       DPSC        0,12           0          12          14       3,5,7        10,8          10          12          14          12          17          16          18
+       DAPD           0           0          12          14           3           8          10          12          14          12          17          16          18
+      Marge           0           0          12          12           0           0           2           4           2           0           4           0           0
+Chemins critiques :
+0 -> 1 -> 4 -> 5 -> 8 -> 11 -> 12 (meilleur chemin)

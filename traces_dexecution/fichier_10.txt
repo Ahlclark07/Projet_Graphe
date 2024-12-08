@@ -1,0 +1,85 @@
+--------------------------------------Création du graphe d’ordonnancement de table 10.txt :----------------------------------------------
+10 sommets
+0 -> 1 = 0
+1 -> 2 = 2
+1 -> 4 = 2
+1 -> 5 = 2
+2 -> 3 = 3
+2 -> 4 = 3
+2 -> 8 = 3
+3 -> 7 = 5
+4 -> 5 = 6
+4 -> 6 = 6
+4 -> 8 = 6
+5 -> 6 = 2
+5 -> 7 = 2
+6 -> 9 = 1
+7 -> 8 = 6
+8 -> 9 = 1
+16 arcs
+------------------------------------------------Matrice des valeurs------------------------------------------------
+      0   1   2   3   4   5   6   7   8   9
+  0   *   0   *   *   *   *   *   *   *   *
+  1   *   *   2   *   2   2   *   *   *   *
+  2   *   *   *   3   3   *   *   *   3   *
+  3   *   *   *   *   *   *   *   5   *   *
+  4   *   *   *   *   *   6   6   *   6   *
+  5   *   *   *   *   *   *   2   2   *   *
+  6   *   *   *   *   *   *   *   *   *   1
+  7   *   *   *   *   *   *   *   *   6   *
+  8   *   *   *   *   *   *   *   *   *   1
+  9   *   *   *   *   *   *   *   *   *   *
+
+--------------------------------------Détection de circuit et détermination des rangs :----------------------------------------------
+Points d'entrée : 0
+Suspression des points d'entrés
+Le rang attribué est : 0
+Points restants : 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9
+Points d'entrée : 1
+Suspression des points d'entrés
+Le rang attribué est : 1
+Points restants : 2 - 3 - 4 - 5 - 6 - 7 - 8 - 9
+Points d'entrée : 2
+Suspression des points d'entrés
+Le rang attribué est : 2
+Points restants : 3 - 4 - 5 - 6 - 7 - 8 - 9
+Points d'entrée : 3 4
+Suspression des points d'entrés
+Le rang attribué est : 3
+Points restants : 5 - 6 - 7 - 8 - 9
+Points d'entrée : 5
+Suspression des points d'entrés
+Le rang attribué est : 4
+Points restants : 6 - 7 - 8 - 9
+Points d'entrée : 6 7
+Suspression des points d'entrés
+Le rang attribué est : 5
+Points restants : 8 - 9
+Points d'entrée : 8
+Suspression des points d'entrés
+Le rang attribué est : 6
+Points restants : 9
+Points d'entrée : 9
+Suspression des points d'entrés
+Le rang attribué est : 7
+Points restants :
+-> Il n’y a pas de circuit
+ Il n’y a pas d’arcs négatifs
+-> C’est un graphe d’ordonnancement
+
+------------------------------------------------------------------------Calendrier des dates :----------------------------------------------
+       Rang           0           1           2           3           3           4           5           5           6           7
+      Tache        0(0)        1(2)        2(3)        3(5)        4(6)        5(2)        6(1)        7(6)        8(1)        9(0)
+       PDCS           -           0           1           2         1,2         1,4         4,5         3,5       2,4,7         6,8
+       DPPR           0           0           2           5         2,5        2,11       11,13       10,13     5,11,19       14,20
+       DAPT           0           0           2           5           5          11          13          13          19          20
+       SCCS           1       2,4,5       3,4,8           7       5,6,8         6,7           9           8           9           -
+       DPSC           0       0,3,9      5,2,16           8     5,13,13       17,11          19          13          19          20
+       DAPD           0           0           2           8           5          11          19          13          19          20
+      Marge           0           0           0           3           0           0           6           0           0           0
+Chemins critiques :
+0 -> 1 -> 2 -> 4
+0 -> 1 -> 4 -> 5 -> 7 (meilleur chemin)
+0 -> 1 -> 5 -> 7 -> 8
+0 -> 1 -> 4 -> 8 -> 9
+0 -> 1 -> 2 -> 8 -> 9

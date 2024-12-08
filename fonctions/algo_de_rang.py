@@ -9,7 +9,6 @@ def algo_de_rang(sommets, matrice, sommets_classe) :
     rang = 0
     # on se sert de numpy car c'est beaucoup plus facile pour parcourir les colonnes
     matrice_rang = np.array(matrice)
-
     # Une boucle pour chaque ligne du tableau même si c'est inutile d'en faire autant dans certains cas
     for i in range(0, len(matrice)):
         # On utilise une fonction utile de numpy qui permet de récupérer les colonnes qui ne contiennent que des
