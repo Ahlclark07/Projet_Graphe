@@ -270,23 +270,56 @@ def algo_calendrier_tard(sommets_classe, sommets, dapt):
     afficher_valeur("DAPD")
     for valeur in reversed(dapd):
         afficher_valeur(valeur)
-    return dapd
-    
-def algo_de_marge(dapt, dapd, sommets_classe):
+    return successeurs, dapd
+
+def algo_de_marge(dapt, dapd):
     dapd_reversed = list(reversed(dapd))
+    marges = [0]
     print()
     afficher_valeur("Marge")
-    chemin_critique = ""
-    for i in range(0, len(dapd_reversed)):
+    afficher_valeur("0")
+    for i in range(1, len(dapd_reversed)):
         marge = dapd_reversed[i] - dapt[i]
         afficher_valeur(marge)
-        if (marge == 0):
-            chemin_critique += str(sommets_classe[i][0])
-            if(i < len(sommets_classe) - 1):
-                chemin_critique += "->"
-    print()
-    afficher_valeur("Chemin critique : " +chemin_critique)
-    
+        marges.append(marge)
+    return marges
+
+
+def afficher_chemins_critiques(sommets_classe, successeurs, marges):
+    n = len(sommets_classe)  
+    chemins_critiques = [[0]]
+    doit_continuer = True
+    while (doit_continuer == True):
+        for chemin_critique in chemins_critiques:
+            changement = False
+            sommet_final = chemin_critique[-1]
+            nbr_branche = 0
+            for successeur in successeurs[recupIndexClasse(sommets_classe, sommet_final)]:
+                if marges[recupIndexClasse(sommets_classe, successeur)] == 0 and sommet_final != n - 1:
+                    if nbr_branche == 0:
+                        chemin_critique.append(successeur)
+                    else:
+                        nouveau_chemin = chemin_critique[:]
+                        nouveau_chemin[-1] = successeur
+                        chemins_critiques.append(nouveau_chemin)
+                    nbr_branche +=1
+                    changement = True
+            if(changement == False) : doit_continuer = False
+    maximum = len(chemins_critiques[0])
+    for chemin in chemins_critiques:
+        if len(chemin) > maximum : maximum = len(chemin) 
+    print("Chemins critiques :")
+    for chemin in chemins_critiques:
+        texte = " -> ".join(map(str, chemin))
+        if(len(chemin) == maximum):
+            afficher_vert(texte)
+        else:
+            afficher_valeur(texte)
+            print()
+        
+        
+    return chemins_critiques
+
 def afficher_menu():
     print("\n=== Menu ===")
     print("1. Lister les fichiers du dossier courant")
@@ -323,13 +356,21 @@ def traiterUnGraphe(fichier):
             afficher_vert("-> Il n’y a pas de circuit \n Il n’y a pas d’arcs négatifs \n-> C’est un graphe d’ordonnancement")
             print("\n------------------------------------------------------------------------Calendrier des dates :----------------------------------------------")
             dapt = algo_calendrier_tot(sommets_classe, sommets)
-            dapd = algo_calendrier_tard(sommets_classe, sommets, dapt)
-            algo_de_marge(dapt, dapd, sommets_classe)
+            successeurs, dapd = algo_calendrier_tard(sommets_classe, sommets, dapt)
+            marges = algo_de_marge(dapt, dapd)
+            print()
+            afficher_chemins_critiques(sommets_classe, list(reversed(successeurs)), marges)
+           
+            # afficher_chemins_critiques(marges, list(reversed(successeurs)), sommets_classe)
+
+
        
     
-
-
-
+def recupIndexClasse(sommets_classe, nom_sommet):
+    for i, sommet in enumerate(sommets_classe):
+        if(sommet[0] == nom_sommet):
+            return i
+    return 0
 ### Programme
 
 def main():
