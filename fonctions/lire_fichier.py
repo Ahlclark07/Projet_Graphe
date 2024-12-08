@@ -1,4 +1,3 @@
-import os
 # Fonction qui permet de lire le fichier et d'en ressortir le tableau de données sous le format
 # [ [sommet_0, cout, contraines_1, ..., contraintes_n ], ..., [sommet_n, cout, contraines_1, ..., contraintes_n ] ]
 def lire_fichier(nom_fichier, sommets):

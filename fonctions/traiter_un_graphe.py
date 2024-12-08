@@ -1,3 +1,4 @@
+from fonctions.afficher_arcs import afficher_arcs
 from fonctions.afficher_chemins_critiques import afficher_chemins_critiques
 from fonctions.afficher_matrice import afficher_matrice
 from fonctions.algo_calendrier_tard import algo_calendrier_tard
@@ -15,19 +16,12 @@ def traiterUnGraphe(fichier):
     matrice = []
     sommets_classe = []
     nbr_arcs = 0
-        # ajout de alpha de cout 0 et sans contraintes
+    # ajout de alpha de cout 0 et sans contraintes
     sommets.append([0, 0]) 
     cout_negatif = lire_fichier("./tableaux/" + fichier, sommets)
     print(f"\n--------------------------------------Création du graphe d’ordonnancement de {fichier} :----------------------------------------------")
     print(str(len(sommets)) + " sommets")
-    donnee_graphe = []
-    for sommet_a in sommets:
-        for sommet_b in sommets:
-            if(sommet_a[0] in sommet_b[2:]):
-                print(str(sommet_a[0]) + " -> " + str(sommet_b[0]) + " = " + str(sommet_a[1]))
-                donnee_graphe.append([sommet_a[0], sommet_b[0], sommet_a[1]])
-                nbr_arcs += 1
-    print(str(nbr_arcs) + " arcs")
+    afficher_arcs(sommets)
     if(cout_negatif):
         afficher_erreur("Cout négatif retrouvé dans le programme")
     else:
